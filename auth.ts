@@ -10,10 +10,12 @@ const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
 async function getUser(email: string): Promise<User | undefined> {
   try {
+    console.log("Intentando conectar a base de datos para el email:", email);
     const user = await sql<User[]>`SELECT * FROM users WHERE email=${email}`;
+    console.log("Resultado de la base de datos:", user); // ESTO ES LA CLAVE
     return user[0];
   } catch (error) {
-    console.error("Failed to fetch user:", error);
+    console.error("ERROR REAL DE LA BASE DE DATOS:", error);
     throw new Error("Failed to fetch user.");
   }
 }

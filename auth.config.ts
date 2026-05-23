@@ -1,12 +1,22 @@
+// auth.config.ts
 import type { NextAuthConfig } from "next-auth";
 
 export const authConfig = {
   pages: {
     signIn: "/login",
   },
+  // ESTO OBLIGA A RECONOCER LAS COOKIES DE TU PANTALLA:
+  useSecureCookies: false,
   callbacks: {
-    authorized() {
-      // ESTO DEJA PASAR A CUALQUIERA SIN PEDIR CONTRASEÑA
+    authorized({ auth, request: { nextUrl } }) {
+      const isLoggedIn = !!auth?.user;
+      const isOnDashboard = nextUrl.pathname.startsWith("/dashboard");
+      if (isOnDashboard) {
+        if (isLoggedIn) return true;
+        return false;
+      } else if (isLoggedIn) {
+        return Response.redirect(new URL("/dashboard", nextUrl));
+      }
       return true;
     },
   },

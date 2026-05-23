@@ -10,12 +10,10 @@ const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
 async function getUser(email: string): Promise<User | undefined> {
   try {
-    console.log("Intentando conectar a base de datos para el email:", email);
     const user = await sql<User[]>`SELECT * FROM users WHERE email=${email}`;
-    console.log("Resultado de la base de datos:", user); // ESTO ES LA CLAVE
     return user[0];
   } catch (error) {
-    console.error("ERROR REAL DE LA BASE DE DATOS:", error);
+    console.error("Failed to fetch user:", error);
     throw new Error("Failed to fetch user.");
   }
 }
@@ -33,13 +31,9 @@ export const { auth, signIn, signOut } = NextAuth({
           const { email, password } = parsedCredentials.data;
           const user = await getUser(email);
           if (!user) return null;
-
-          console.log("¿Coinciden?:", passwordsMatch);
-
+          const passwordsMatch = await bcrypt.compare(password, user.password);
           if (passwordsMatch) return user;
         }
-
-        console.log("Invalid credentials");
         return null;
       },
     }),

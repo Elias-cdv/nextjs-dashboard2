@@ -22,7 +22,7 @@ export default function EditInvoiceForm({
   const updateInvoiceWithId = updateInvoice.bind(null, invoice.id);
 
   return (
-    <form action={updateInvoiceWithId}>
+    <form action={updateInvoiceWithId as any}>
       {" "}
       {/* <-- Y LO USAS AQUÍ */}
       <div className="rounded-md bg-gray-50 p-4 md:p-6">

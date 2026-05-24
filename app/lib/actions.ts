@@ -5,7 +5,7 @@ import { sql } from "@vercel/postgres";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { AuthError } from "next-auth";
-import { signIn } from "@/auth";
+import { signIn, signOut } from "@/auth";
 
 export type State = {
   errors?: {
@@ -29,7 +29,9 @@ const FormSchema = z.object({
 });
 
 const CreateInvoice = FormSchema.omit({ id: true, date: true });
+const UpdateInvoice = FormSchema.omit({ id: true, date: true });
 
+// --- ACCIÓN PARA CREAR ---
 export async function createInvoice(prevState: State, formData: FormData) {
   const validatedFields = CreateInvoice.safeParse({
     customerId: formData.get("customerId"),
@@ -57,6 +59,7 @@ export async function createInvoice(prevState: State, formData: FormData) {
   revalidatePath("/dashboard/invoices");
   redirect("/dashboard/invoices");
 }
+
 // --- ACCIÓN PARA ACTUALIZAR ---
 export async function updateInvoice(id: string, formData: FormData) {
   const { customerId, amount, status } = UpdateInvoice.parse({
@@ -91,16 +94,7 @@ export async function deleteInvoice(id: string) {
   }
 }
 
-// Define el tipo State para tus errores
-export type State = {
-  errors?: {
-    customerId?: string[];
-    amount?: string[];
-    status?: string[];
-  };
-  message?: string | null;
-};
-
+// --- ACCIÓN PARA AUTENTICAR ---
 export async function authenticate(
   prevState: string | undefined,
   formData: FormData,
@@ -118,4 +112,9 @@ export async function authenticate(
     }
     throw error;
   }
+}
+
+// --- ACCIÓN PARA CERRAR SESIÓN ---
+export async function handleSignOut() {
+  await signOut({ redirectTo: "/" });
 }

@@ -8,7 +8,7 @@ import {
   LatestInvoicesSkeleton,
   CardsSkeleton,
 } from "@/app/ui/skeletons"; // Importamos los esqueletos
-
+import CardWrapper from "@/app/ui/dashboard/cards";
 export default async function Page() {
   return (
     <main>

@@ -29,7 +29,7 @@ export function DeleteInvoice({ id }: { id: string }) {
   const deleteInvoiceWithId = deleteInvoice.bind(null, id); // 2. Vincula el ID
 
   return (
-    <form action={deleteInvoiceWithId}>
+    <form action={deleteInvoiceWithId as any}>
       {" "}
       {/* 3. Envuelve en form */}
       <button type="submit" className="rounded-md border p-2 hover:bg-gray-100">
